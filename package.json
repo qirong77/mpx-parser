@@ -5,9 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "test": "tsx ./src/main.ts",
-    "test:full": "tsx ./src/test.ts",
-    "test:convert": "tsx ./src/convert-test.ts",
     "preview": "vite preview"
   },
   "devDependencies": {
