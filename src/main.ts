@@ -1,6 +1,7 @@
 import "./polyfills";
 import { mpxFileParser } from "./parser/mpxFileParser";
 import { parseMpxTemplate } from "./parser/mpxTemplateParser";
+import { parseMpxStyle } from "./parser/mpxStyleParser";
 import "./style.css";
 import * as monaco from "monaco-editor";
 
@@ -128,6 +129,7 @@ function initializeApp() {
         }
         try {
             const blocks = mpxFileParser(template);
+            console.log(blocks)
             const templateResult = parseMpxTemplate(template);
             const scriptResult = await fetch('/babel/script', {
                 method: 'POST',
@@ -136,13 +138,12 @@ function initializeApp() {
                 },
                 body: JSON.stringify({ code: blocks.script || '' })
             }).then(res => res.json()).then(data => data.code); 
-            console.log(scriptResult);
-            // const styleResult = parseMpxScript(blocks.style || "");
+            const styleResult = parseMpxStyle(blocks.style || "");
             const jsonResult = blocks.json || "";
             let vueContent = "";
             vueContent += `<template>\n${templateResult}\n</template>\n\n`;
-            // vueContent += `<script>\n${scriptResult}\n</script>\n\n`;
-            // vueContent += `<style>\n${styleResult}\n</style>\n\n`;
+            vueContent += `<script>\n${scriptResult}\n</script>\n\n`;
+            vueContent += `<style>\n${styleResult}\n</style>\n\n`;
             vueContent += `<script type="application/json">\n${jsonResult}\n</script>\n`;
             vueEditor.setValue(vueContent);
         } catch (error) {
