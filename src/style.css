@@ -140,27 +140,6 @@ section h2 {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* 输入区域 (保留作为后备) */
-.input-section textarea {
-  width: 100%;
-  min-height: 300px;
-  padding: var(--space-md);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--bg-color);
-  color: var(--text-primary);
-  font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  resize: vertical;
-  margin-bottom: var(--space-md);
-}
-
-.input-section textarea:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
 
 /* 按钮 */
 button {

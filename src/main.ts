@@ -1,3 +1,4 @@
+import "./polyfills";
 import { mpxFileParser } from "./parser/mpxFileParser";
 import { parseMpxScript } from "./parser/mpxScriptParser";
 import { parseMpxTemplate } from "./parser/mpxTemplateParser";
@@ -133,12 +134,13 @@ function initializeApp() {
             const blocks = mpxFileParser(template);
             const templateResult = parseMpxTemplate(template);
             const scriptResult = parseMpxScript(blocks.script || "");
-            const styleResult = parseMpxScript(blocks.style || "");
+            console.log(scriptResult)
+            // const styleResult = parseMpxScript(blocks.style || "");
             const jsonResult = blocks.json || "";
             let vueContent = "";
             vueContent += `<template>\n${templateResult}\n</template>\n\n`;
-            vueContent += `<script>\n${scriptResult}\n</script>\n\n`;
-            vueContent += `<style>\n${styleResult}\n</style>\n\n`;
+            // vueContent += `<script>\n${scriptResult}\n</script>\n\n`;
+            // vueContent += `<style>\n${styleResult}\n</style>\n\n`;
             vueContent += `<script type="application/json">\n${jsonResult}\n</script>\n`;
             vueEditor.setValue(vueContent);
         } catch (error) {

@@ -11,40 +11,20 @@
 <body>
   <div id="app">
     <header>
-      <h1>🚀 MPX 模板语法解析器</h1>
-      <p>一个用于解析 MPX 模板语法的 TypeScript 解析器</p>
     </header>
 
-      <main>
-        <section class="input-section">
-          <h2>📝 输入 MPX 模板</h2>
-          <div id="mpx-editor-container" class="editor-container"></div>
-          <button id="parse-btn">🔍 解析并转换</button>
-        </section>
+    <main style="display: flex;">
+      <section style="flex: 1;">
+        <h2>📝 MPX 模板</h2>
+        <div id="mpx-editor-container" class="editor-container"></div>
+        <button id="parse-btn">🔍 解析并转换</button>
+      </section>
 
-        <section class="vue-output-section">
-          <h2>🎯 Vue 模板输出</h2>
-          <div id="vue-editor-container" class="editor-container"></div>
-          <button id="copy-vue-btn">� 复制 Vue 代码</button>
-        </section>
-
-        <section class="analysis-section">
-          <h2>📊 解析结果</h2>
-          <div class="tabs">
-            <button class="tab-btn active" data-tab="ast">AST 结构</button>
-            <button class="tab-btn" data-tab="stats">统计信息</button>
-            <button class="tab-btn" data-tab="errors">错误/警告</button>
-          </div>
-          
-          <div class="tab-content">
-            <div id="ast-output" class="tab-panel active"></div>
-            <div id="stats-output" class="tab-panel"></div>
-            <div id="errors-output" class="tab-panel"></div>
-          </div>
-        </section>
-      </main>    <footer>
-      <p>💡 支持 MPX 指令：wx:if, wx:for, wx:model, bindtap 等</p>
-    </footer>
+      <section style="flex: 1;">
+        <h2>🎯 Vue 输出</h2>
+        <div id="vue-editor-container" class="editor-container"></div>
+      </section>
+    </main>
   </div>
 
   <script type="module" src="/src/main.ts"></script>
