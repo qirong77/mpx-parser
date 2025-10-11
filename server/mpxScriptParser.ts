@@ -9,7 +9,6 @@ export function parseMpxScript(scriptContent: string) {
             sourceType: "module",
             plugins: ["jsx", "typescript"],
         });
-        
         // 使用 traverse 遍历和修改 AST
         traverse(ast, {
             // 转换 createComponent 调用

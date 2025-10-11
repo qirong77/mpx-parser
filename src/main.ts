@@ -1,6 +1,5 @@
 import "./polyfills";
 import { mpxFileParser } from "./parser/mpxFileParser";
-import { parseMpxScript } from "./parser/mpxScriptParser";
 import { parseMpxTemplate } from "./parser/mpxTemplateParser";
 import "./style.css";
 import * as monaco from "monaco-editor";
@@ -102,10 +101,7 @@ function initializeApp() {
     initializeMonacoEditors();
 
     const parseBtn = document.getElementById("parse-btn") as HTMLButtonElement;
-    const copyVueBtn = document.getElementById("copy-vue-btn") as HTMLButtonElement;
     const astOutput = document.getElementById("ast-output") as HTMLDivElement;
-
-    // 标签页切换
     const tabBtns = document.querySelectorAll(".tab-btn");
     const tabPanels = document.querySelectorAll(".tab-panel");
 
@@ -124,7 +120,7 @@ function initializeApp() {
     });
 
     // 解析按钮点击事件
-    parseBtn.addEventListener("click", () => {
+    parseBtn.addEventListener("click", async () => {
         const template = mpxEditor.getValue().trim();
         if (!template) {
             alert("请输入 MPX 模板代码！");
@@ -133,8 +129,14 @@ function initializeApp() {
         try {
             const blocks = mpxFileParser(template);
             const templateResult = parseMpxTemplate(template);
-            const scriptResult = parseMpxScript(blocks.script || "");
-            console.log(scriptResult)
+            const scriptResult = await fetch('/babel/script', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ code: blocks.script || '' })
+            }).then(res => res.json()).then(data => data.code); 
+            console.log(scriptResult);
             // const styleResult = parseMpxScript(blocks.style || "");
             const jsonResult = blocks.json || "";
             let vueContent = "";
@@ -149,39 +151,6 @@ function initializeApp() {
             vueEditor.setValue(`<!-- 解析失败: ${error} -->`);
         }
     });
-
-    // 复制 Vue 代码按钮
-    copyVueBtn.addEventListener("click", async () => {
-        const vueCode = vueEditor.getValue();
-        if (!vueCode || vueCode.includes("Vue 模板将在这里显示") || vueCode.includes("无法转换模板")) {
-            alert("请先解析 MPX 模板！");
-            return;
-        }
-
-        try {
-            await navigator.clipboard.writeText(vueCode);
-            copyVueBtn.classList.add("copied");
-            copyVueBtn.textContent = "✓ 已复制";
-
-            setTimeout(() => {
-                copyVueBtn.classList.remove("copied");
-                copyVueBtn.textContent = "📋 复制 Vue 代码";
-            }, 2000);
-        } catch (error) {
-            console.error("复制失败:", error);
-            // 降级方案：选择文本
-            vueEditor.focus();
-            vueEditor.setSelection(vueEditor.getModel()!.getFullModelRange());
-            alert("请使用 Ctrl+C (或 Cmd+C) 复制选中的代码");
-        }
-    });
-
-    // 初始解析默认模板
-    setTimeout(() => {
-        if (parseBtn) {
-            parseBtn.click();
-        }
-    }, 1000);
 }
 
 // DOM 加载完成后初始化
