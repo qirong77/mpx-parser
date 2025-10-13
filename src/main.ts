@@ -1,4 +1,4 @@
-import "./polyfills";
+
 import { mpxFileParser } from "./parser/mpxFileParser";
 import { parseMpxTemplate } from "./parser/mpxTemplateParser";
 import { parseMpxStyle } from "./parser/mpxStyleParser";
