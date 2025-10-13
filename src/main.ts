@@ -130,7 +130,7 @@ function initializeApp() {
         try {
             const blocks = mpxFileParser(template);
             console.log(blocks)
-            const templateResult = parseMpxTemplate(template);
+            const templateResult = parseMpxTemplate(blocks.template || "");
             const scriptResult = await fetch('/babel/script', {
                 method: 'POST',
                 headers: {
@@ -138,6 +138,7 @@ function initializeApp() {
                 },
                 body: JSON.stringify({ code: blocks.script || '' })
             }).then(res => res.json()).then(data => data.code); 
+
             const styleResult = parseMpxStyle(blocks.style || "");
             const jsonResult = blocks.json || "";
             let vueContent = "";
