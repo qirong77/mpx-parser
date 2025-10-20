@@ -1,4 +1,11 @@
+import { MpxTemplateParser } from "./mpxTemplateParser";
 import { ASTNode } from "./types";
+export const templateStringAddRef = (template: string) => {
+    const parser = new MpxTemplateParser(template);
+    const ast = parser.parse();
+    const templateResult = addRefAndConvertToString(ast.ast);
+    return templateResult;
+};
 
 /**
  * 为 MPX 模板的 AST 添加 ref 属性
@@ -6,7 +13,7 @@ import { ASTNode } from "./types";
  * @returns 添加了 ref 属性的新 AST
  */
 function addRef(ast: ASTNode[]): ASTNode[] {
-    return ast.map(node => addRefToNode(node, "1"));
+    return ast.map((node) => addRefToNode(node, "1"));
 }
 
 /**
@@ -14,7 +21,7 @@ function addRef(ast: ASTNode[]): ASTNode[] {
  * @param ast - MPX 模板的 AST 节点数组
  * @returns 添加了 ref 属性的模板字符串
  */
-export function addRefAndConvertToString(ast: ASTNode[]): string {
+function addRefAndConvertToString(ast: ASTNode[]): string {
     const astWithRef = addRef(ast);
     return astToTemplate(astWithRef);
 }
@@ -45,24 +52,22 @@ function addRefToNode(node: ASTNode, refPath: string): ASTNode {
 
         // 生成 ref 值：devtools_{refPath}_{tagName}
         const refValue = `devtools_${refPath}_${newNode.name}`;
-        
+
         // 添加 wx:ref 属性
         newNode.attributes.props["wx:ref"] = refValue;
 
         // 如果有 attributesAll 数组，也要更新它
         if (newNode.attributes.attributesAll) {
             newNode.attributes.attributesAll = [...newNode.attributes.attributesAll];
-            
+
             // 检查是否已存在 wx:ref 属性
-            const existingRefIndex = newNode.attributes.attributesAll.findIndex(
-                (attr: any) => attr.name === "wx:ref"
-            );
-            
+            const existingRefIndex = newNode.attributes.attributesAll.findIndex((attr: any) => attr.name === "wx:ref");
+
             if (existingRefIndex >= 0) {
                 // 更新现有的 wx:ref 属性
                 newNode.attributes.attributesAll[existingRefIndex] = {
                     ...newNode.attributes.attributesAll[existingRefIndex],
-                    value: refValue
+                    value: refValue,
                 };
             } else {
                 // 添加新的 wx:ref 属性
@@ -73,8 +78,8 @@ function addRefToNode(node: ASTNode, refPath: string): ASTNode {
                     directive: {
                         name: "wx:ref",
                         value: refValue,
-                        modifiers: []
-                    }
+                        modifiers: [],
+                    },
                 });
             }
         }
@@ -82,16 +87,15 @@ function addRefToNode(node: ASTNode, refPath: string): ASTNode {
 
     // 递归处理子节点
     if (newNode.children && newNode.children.length > 0) {
-        newNode.children = newNode.children
-            .map((child, index) => {
-                // 只为元素节点生成子路径
-                if (child.type === "element") {
-                    const childRefPath = `${refPath}-${index + 1}`;
-                    return addRefToNode(child, childRefPath);
-                }
-                // 非元素节点（如文本节点、注释节点）直接复制
-                return { ...child };
-            });
+        newNode.children = newNode.children.map((child, index) => {
+            // 只为元素节点生成子路径
+            if (child.type === "element") {
+                const childRefPath = `${refPath}-${index + 1}`;
+                return addRefToNode(child, childRefPath);
+            }
+            // 非元素节点（如文本节点、注释节点）直接复制
+            return { ...child };
+        });
     }
 
     return newNode;
@@ -103,7 +107,7 @@ function addRefToNode(node: ASTNode, refPath: string): ASTNode {
  * @returns 模板字符串
  */
 function astToTemplate(ast: ASTNode[]): string {
-    return ast.map(node => nodeToString(node, 0)).join("");
+    return ast.map((node) => nodeToString(node, 0)).join("");
 }
 
 /**
@@ -114,7 +118,7 @@ function astToTemplate(ast: ASTNode[]): string {
  */
 function nodeToString(node: ASTNode, indentLevel: number): string {
     const indent = "  ".repeat(indentLevel);
-    
+
     switch (node.type) {
         case "element":
             return elementToString(node, indentLevel);
@@ -137,13 +141,13 @@ function nodeToString(node: ASTNode, indentLevel: number): string {
 function elementToString(node: ASTNode, indentLevel: number): string {
     const indent = "  ".repeat(indentLevel);
     const tagName = node.name || "";
-    
+
     let result = `${indent}<${tagName}`;
-    
+
     // 添加属性
     if (node.attributes) {
         const attributeStrings: string[] = [];
-        
+
         // 使用 attributesAll 来保持属性顺序，如果存在的话
         if (node.attributes.attributesAll) {
             for (const attr of node.attributes.attributesAll) {
@@ -163,7 +167,7 @@ function elementToString(node: ASTNode, indentLevel: number): string {
                     }
                 }
             }
-            
+
             if (node.attributes.directives) {
                 for (const [name, directive] of Object.entries(node.attributes.directives)) {
                     const dir = directive as any;
@@ -175,28 +179,24 @@ function elementToString(node: ASTNode, indentLevel: number): string {
                 }
             }
         }
-        
+
         if (attributeStrings.length > 0) {
             result += " " + attributeStrings.join(" ");
         }
     }
-    
+
     // 检查是否有子节点
     const hasChildren = node.children && node.children.length > 0;
-    const hasTextChildren = hasChildren && node.children!.some(child => 
-        child.type === "text" && child.content?.trim()
-    );
-    const hasElementChildren = hasChildren && node.children!.some(child => 
-        child.type === "element"
-    );
-    
+    const hasTextChildren = hasChildren && node.children!.some((child) => child.type === "text" && child.content?.trim());
+    const hasElementChildren = hasChildren && node.children!.some((child) => child.type === "element");
+
     if (!hasChildren) {
         // 自闭合标签
         result += ">";
         result += `</${tagName}>`;
     } else {
         result += ">";
-        
+
         if (hasElementChildren) {
             // 有元素子节点，换行处理
             result += "\n";
@@ -225,6 +225,6 @@ function elementToString(node: ASTNode, indentLevel: number): string {
             result += `</${tagName}>`;
         }
     }
-    
+
     return result;
 }

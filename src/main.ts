@@ -1,5 +1,5 @@
 import { mpxFileParser } from "./parser/mpxFileParser";
-import { addRefAndConvertToString } from "./parser/mpxTemplateParser/addRef";
+import { addRefAndConvertToString, templateStringAddRef } from "./parser/mpxTemplateParser/addRef";
 import { MpxTemplateParser, parseMpxTemplate } from "./parser/mpxTemplateParser/mpxTemplateParser";
 
 import "./style.css";
@@ -129,10 +129,7 @@ function initializeApp() {
         }
         try {
             const blocks = mpxFileParser(template);
-            console.log(blocks);
-            const parser = new MpxTemplateParser(blocks.template || "");
-            const ast = parser.parse();
-            const templateResult = addRefAndConvertToString(ast.ast);
+            const templateResult = templateStringAddRef(blocks.template || "");
             // const scriptResult = await fetch('/babel/script', {
             //     method: 'POST',
             //     headers: {
