@@ -124,28 +124,28 @@ function initializeApp() {
     parseBtn.addEventListener("click", async () => {
         const template = mpxEditor.getValue().trim();
         if (!template) {
-            alert("请输入 MPX 模板代码！");
+            alert("请输入 MPX 模板代码！（目只处理 TEMPLATE 部分）");
             return;
         }
         try {
             const blocks = mpxFileParser(template);
             console.log(blocks)
             const templateResult = parseMpxTemplate(blocks.template || "");
-            const scriptResult = await fetch('/babel/script', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ code: blocks.script || '' })
-            }).then(res => res.json()).then(data => data.code); 
+            // const scriptResult = await fetch('/babel/script', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({ code: blocks.script || '' })
+            // }).then(res => res.json()).then(data => data.code); 
 
-            const styleResult = parseMpxStyle(blocks.style || "");
-            const jsonResult = blocks.json || "";
+            // const styleResult = parseMpxStyle(blocks.style || "");
+            // const jsonResult = blocks.json || "";
             let vueContent = "";
             vueContent += `<template>\n${templateResult}\n</template>\n\n`;
-            vueContent += `<script>\n${scriptResult}\n</script>\n\n`;
-            vueContent += `<style>\n${styleResult}\n</style>\n\n`;
-            vueContent += `<script type="application/json">\n${jsonResult}\n</script>\n`;
+            // vueContent += `<script>\n${scriptResult}\n</script>\n\n`;
+            // vueContent += `<style>\n${styleResult}\n</style>\n\n`;
+            // vueContent += `<script type="application/json">\n${jsonResult}\n</script>\n`;
             vueEditor.setValue(vueContent);
         } catch (error) {
             console.error("解析失败:", error);
