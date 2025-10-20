@@ -5,8 +5,18 @@ import { ASTNode } from "./types";
  * @param ast - MPX 模板的 AST 节点数组
  * @returns 添加了 ref 属性的新 AST
  */
-export function addRef(ast: ASTNode[]): ASTNode[] {
+function addRef(ast: ASTNode[]): ASTNode[] {
     return ast.map(node => addRefToNode(node, "1"));
+}
+
+/**
+ * 为 MPX 模板的 AST 添加 ref 属性并转换为字符串
+ * @param ast - MPX 模板的 AST 节点数组
+ * @returns 添加了 ref 属性的模板字符串
+ */
+export function addRefAndConvertToString(ast: ASTNode[]): string {
+    const astWithRef = addRef(ast);
+    return astToTemplate(astWithRef);
 }
 
 /**
@@ -92,7 +102,7 @@ function addRefToNode(node: ASTNode, refPath: string): ASTNode {
  * @param ast - 添加了 ref 的 AST 节点数组
  * @returns 模板字符串
  */
-export function astToTemplate(ast: ASTNode[]): string {
+function astToTemplate(ast: ASTNode[]): string {
     return ast.map(node => nodeToString(node, 0)).join("");
 }
 

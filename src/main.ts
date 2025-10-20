@@ -1,7 +1,6 @@
-
 import { mpxFileParser } from "./parser/mpxFileParser";
-import { parseMpxTemplate, MpxTemplateParser,  } from "./parser/mpxTemplateParser/mpxTemplateParser";
-import { addRef, astToTemplate } from "./parser/mpxTemplateParser/addRef";
+import { addRefAndConvertToString } from "./parser/mpxTemplateParser/addRef";
+import { MpxTemplateParser, parseMpxTemplate } from "./parser/mpxTemplateParser/mpxTemplateParser";
 
 import "./style.css";
 import * as monaco from "monaco-editor";
@@ -130,15 +129,17 @@ function initializeApp() {
         }
         try {
             const blocks = mpxFileParser(template);
-            console.log(blocks)
-            const templateResult = parseMpxTemplate(blocks.template || "");
+            console.log(blocks);
+            const parser = new MpxTemplateParser(blocks.template || "");
+            const ast = parser.parse();
+            const templateResult = addRefAndConvertToString(ast.ast);
             // const scriptResult = await fetch('/babel/script', {
             //     method: 'POST',
             //     headers: {
             //         'Content-Type': 'application/json'
             //     },
             //     body: JSON.stringify({ code: blocks.script || '' })
-            // }).then(res => res.json()).then(data => data.code); 
+            // }).then(res => res.json()).then(data => data.code);
 
             // const styleResult = parseMpxStyle(blocks.style || "");
             // const jsonResult = blocks.json || "";
