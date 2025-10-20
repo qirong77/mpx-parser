@@ -1,4 +1,6 @@
-import { ASTNode, ASTTraverser } from "./mpxTemplateParser";
+import { ASTTraverser } from "./ASTTraverser";
+import { ASTNode } from "./types";
+
 
 class MpxToVueConverter extends ASTTraverser {
     private output: string = "";
@@ -265,7 +267,7 @@ class MpxToVueConverter extends ASTTraverser {
  * @param ast - MPX 模板的 AST
  * @returns Vue 模板字符串
  */
-export function convertMpxToVue(ast: ASTNode[]): string {
+ export function convertMpxToVue(ast: ASTNode[]): string {
     const converter = new MpxToVueConverter();
     return converter.convertToVue(ast);
 }

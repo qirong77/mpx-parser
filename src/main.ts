@@ -1,7 +1,8 @@
 
 import { mpxFileParser } from "./parser/mpxFileParser";
-import { parseMpxTemplate } from "./parser/mpxTemplateParser/mpxTemplateParser";
-import { parseMpxStyle } from "./parser/mpxStyleParser";
+import { parseMpxTemplate, MpxTemplateParser,  } from "./parser/mpxTemplateParser/mpxTemplateParser";
+import { addRef, astToTemplate } from "./parser/mpxTemplateParser/addRef";
+
 import "./style.css";
 import * as monaco from "monaco-editor";
 

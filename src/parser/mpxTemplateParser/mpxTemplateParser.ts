@@ -1,43 +1,8 @@
+
 import { convertMpxToVue } from "./convertToVue";
+import { ASTNode, Attribute, Directive, ParseResult } from "./types";
 
-// AST 节点类型定义
-export interface ASTNode {
-    type: string;
-    name?: string;
-    attributes?: Record<string, any>;
-    children?: ASTNode[];
-    content?: string;
-    startTag?: string;
-    endTag?: string;
-    position?: {
-        start: number;
-        end: number;
-        line: number;
-        column: number;
-    };
-}
 
-// 指令类型定义
-interface Directive {
-    name: string;
-    value: string;
-    modifiers?: string[];
-}
-
-// 属性类型定义
-interface Attribute {
-    name: string;
-    value: string;
-    isDirective: boolean;
-    directive?: Directive;
-}
-
-// 解析结果类型定义
-interface ParseResult {
-    ast: ASTNode[];
-    errors: string[];
-    warnings: string[];
-}
 
 // 词法分析器
 class Lexer {
@@ -95,7 +60,7 @@ class Lexer {
 }
 
 // MPX 模板解析器
-class MpxTemplateParser {
+export class MpxTemplateParser {
     private lexer: Lexer;
     private errors: string[] = [];
     private warnings: string[] = [];
@@ -475,45 +440,7 @@ class MpxTemplateParser {
     }
 }
 
-// 遍历器
-export class ASTTraverser {
-    // 遍历 AST
-    traverse(
-        ast: ASTNode[],
-        visitor: {
-            enter?: (node: ASTNode, parent?: ASTNode) => void;
-            exit?: (node: ASTNode, parent?: ASTNode) => void;
-        }
-    ): void {
-        for (const node of ast) {
-            this.traverseNode(node, visitor);
-        }
-    }
 
-    // 遍历单个节点
-    private traverseNode(
-        node: ASTNode,
-        visitor: {
-            enter?: (node: ASTNode, parent?: ASTNode) => void;
-            exit?: (node: ASTNode, parent?: ASTNode) => void;
-        },
-        parent?: ASTNode
-    ): void {
-        if (visitor.enter) {
-            visitor.enter(node, parent);
-        }
-
-        if (node.children) {
-            for (const child of node.children) {
-                this.traverseNode(child, visitor, node);
-            }
-        }
-
-        if (visitor.exit) {
-            visitor.exit(node, parent);
-        }
-    }
-}
 
 /**
  * 解析 MPX 模板内容
